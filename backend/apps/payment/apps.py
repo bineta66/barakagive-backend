@@ -1,0 +1,10 @@
+from django.apps import AppConfig
+
+
+class PaymentConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.payment'
+    verbose_name = 'Paiement & Abonnements'
+
+    def ready(self):
+        import apps.payment.signals  # noqa

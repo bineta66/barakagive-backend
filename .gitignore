@@ -1,0 +1,25 @@
+# Python / Django
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.env.*
+
+# Vue / Node
+node_modules/
+dist/
+.vite/
+
+# IDE
+.vscode/
+.idea/
+
+# Système
+.DS_Store
+Thumbs.db
+# Scripts locaux de maintenance
+normalize_shadows.py
+normalize_strings.py
+add_borders.py
+test_api.py
