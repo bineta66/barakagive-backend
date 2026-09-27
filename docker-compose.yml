@@ -4,11 +4,8 @@ services:
     container_name: barakagive_db
     restart: always
     env_file:
-      - ./backend/.env
+      - .env
     environment:
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -27,17 +24,16 @@ services:
 
   backend:
     build:
-    
-      context: ./backend
+      context: .
       dockerfile: docker/Dockerfile
     container_name: barakagive_backend
     command: sh docker/entrypoint.sh
     restart: always
     working_dir: /app
     volumes:
-      - ./backend:/app
+      - .:/app
     env_file:
-      - ./backend/.env
+      - .env
     ports:
       - "8000:8000"
     depends_on:
@@ -46,39 +42,47 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ../barakagive-frontend
       dockerfile: Dockerfile
     container_name: barakagive_frontend
     restart: always
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
+    volumes:
+      - ../barakagive-frontend:/app
+      - /app/node_modules
     ports:
-      - "80:80"
+      - "5173:5173"
     depends_on:
       - backend
 
   celery:
     build:
-      context: ./backend
+      context: .
       dockerfile: docker/Dockerfile
     container_name: barakagive_celery
     command: celery -A config worker -l info
     restart: always
     working_dir: /app
     volumes:
-      - ./backend:/app
+      - .:/app
     env_file:
-      - ./backend/.env
+      - .env
     depends_on:
       - db
       - redis
 
   ia_service:
     build:
-      context: ./ia_service
+      context: ../barakagive-ia-service
       dockerfile: Dockerfile
     container_name: barakagive_ia_service
     restart: always
+    working_dir: /app
+    volumes:
+      - ../barakagive-ia-service:/app
     env_file:
-      - ./ia_service/.env
+      - ../barakagive-ia-service/.env
     ports:
       - "8001:8001"
     depends_on:
